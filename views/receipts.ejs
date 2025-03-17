@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+
+</head>
+<body>
+    <div class="table">
+        <h2><%= title %></h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Patient Name</th>
+                    <th>Phone Number</th>
+                    <th>Services</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% receipts.forEach(receipt => { %>
+                    <tr>
+                        <td><%= receipt.id %></td>
+                        <td> <a href="/receiptDetails/<%= receipt.id %>"><%= receipt.patient_name %></a> </td>
+                        <td><%= receipt.phone_number %></td>
+                        <td><%= receipt.services %></td>
+                        <td><%= receipt.total %></td>
+                    </tr>
+                <% }) %>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

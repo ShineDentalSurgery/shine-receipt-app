@@ -1,0 +1,200 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #310909;
+    color: white;
+}
+
+
+
+.navbar-left {
+    display: flex;
+    align-items: center;
+}
+
+.logo {
+    height: 40px;
+    margin-right: 10px;
+}
+
+.brand-name {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: white;
+    text-decoration: none;
+}
+
+.brand-name:hover{
+    text-decoration: underline;
+}
+.navbar-right {
+    font-size: 1em;
+}
+
+.account-link {
+    text-decoration: none;
+    color: white;
+}
+
+.account-link:hover {
+    text-decoration: underline;
+}
+main {
+
+    background-color: #ecebeb;
+}
+
+h2 {
+    color: #333;
+    font-weight: bolder;
+    font-size: 30px;
+}
+
+.add {
+    display: flex;
+    justify-content: space-around;
+}
+
+.contianer {
+    background-color: white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin: 20px;
+    padding: 30px;
+    border-radius: 5px;
+}
+
+.table {
+    width: 100%;
+    padding: 20px;
+    background-color: white;
+}
+
+.contianer p {
+    margin: 15px 0;
+    text-align: center;
+}
+
+form {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin-top: 10px;
+}
+
+input[type="text"],
+input[type="number"] {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    box-sizing: border-box;
+    border-radius: 5px;
+}
+
+button {
+    margin-top: 10px;
+    padding: 10px 15px;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+.home {
+    height: 50vh;
+    background-color: white;
+    width: 100%;
+    text-align: center;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+h2, h2 {
+    color: #333;
+    text-align: center;
+    padding: 2px;
+}
+
+h3 {
+    margin-top: 20px;
+    color: #333;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+li {
+    background-color: #f8f9fa;
+    margin: 5px 0;
+    padding: 10px;
+    border: 1px solid #ddd;
+}
+
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+th, td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+th {
+    background-color: #f4f4f4;
+}
+
+.receipt-card {
+    background-color: white;
+    padding: 20px;
+    display: flex;
+    /* flex-direction: column; */
+    justify-content: center;
+}
+
+.receipt h2 {
+    text-align: left;
+}
+
+.receipt p {
+    margin-left: 10px;
+}
+
+.receipt {
+    width: 600px;
+    height: 600px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    text-align: left;
+    gap: 20px;
+    background-color: #f7f7f7;
+}
+
+footer {
+    background-color: #310909;
+    padding: 10px 20px;
+    text-align: center;
+    color: white;
+}
