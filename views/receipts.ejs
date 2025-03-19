@@ -9,6 +9,7 @@
 <body>
     <div class="table">
         <h2><%= title %></h2>
+        <input type="text" id="filter" placeholder="Search Patient.... ">
         <table>
             <thead>
                 <tr>
@@ -21,9 +22,9 @@
             </thead>
             <tbody>
                 <% receipts.forEach(receipt => { %>
-                    <tr>
+                    <tr id="item-list">
                         <td><%= receipt.id %></td>
-                        <td> <a href="/receiptDetails/<%= receipt.id %>"><%= receipt.patient_name %></a> </td>
+                        <td id="names"> <a href="/receiptDetails/<%= receipt.id %>"><%= receipt.patient_name %></a> </td>
                         <td><%= receipt.phone_number %></td>
                         <td><%= receipt.services %></td>
                         <td><%= receipt.total %></td>
@@ -34,3 +35,20 @@
     </div>
 </body>
 </html>
+
+<script>
+    document.getElementById('filter').addEventListener('input', function() {
+        const filterValue = this.value.toLowerCase();
+        const items = document.querySelectorAll("#item-list td");
+        console.log(items)
+
+        items.forEach(item => {
+            const text = item.textContent.toLowerCase();
+            if (text.includes(filterValue)) {
+                item.classList.remove('hidden');                
+            } else {
+                item.classList.add('hidden')
+            }
+        })
+    })
+</script>

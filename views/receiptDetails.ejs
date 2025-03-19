@@ -1,17 +1,47 @@
-<div class="receipt-card">
-    <div class="receipt">
-        <!-- <h2>Receipt ID: <%= receipt.id %> -->
-        </h2>
-        <img src="/images/shine_recipt.jpeg" alt="">
-        <p><strong>Patient Name:</strong>  <%= receipt.patient_name %>
-        </p>
-        <p><strong>Phone Number:</strong> <%= receipt.phone_number %>
-        </p>
-        <p><strong>Services: </strong><%= receipt.services %>
-        </p>
-        <p><strong> Total: </strong>UGX<%= receipt.total %>
-        </p>
-    </div> 
+<body>
+    <div class="receipt-card">
+        <div class="receipt">
+            <img src="/images/reciept_logo.png" alt="Receipt Logo">
+            <table class="receipt-table">
+                <tr>
+                    <th>Patient Name</th>
+                    <td>
+                        <%= receipt.patient_name %>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Phone Number</th>
+                    <td>
+                        <%= receipt.phone_number %>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Services</th>
+                    <td>
+                        <%= Array.isArray(receipt.services) ? receipt.services.join(", ") : receipt.services %></td>
+                </tr>
+                <tr>
+                    <th>Total</th>
+                    <td>UGX <%= receipt.total %></td>
+                </tr>
+            </table>
+            <br>
+            <br>
+            <br>
+            <p>BY: _______________</p>
+        </div>
+    </div>
+    
+    <button id="print-button">Print</button>
 
-</div>
-<a href="/receipts">Back</a>
+                            <a href="/receipts"><button id="back">Back</button></a>
+
+</body>
+
+</html>
+<script>
+    // JavaScript to trigger print
+    document.getElementById('print-button').addEventListener('click', function () {
+        window.print();
+    });
+</script>
