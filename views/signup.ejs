@@ -1,6 +1,65 @@
+<style>
 
+  .signup {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    width: 100%;
+  }
 
-        <div class="signup">
+  .signup .cont {
+    text-align: center;
+  }
+
+  .signup p {
+    margin-bottom: 20px;
+    color: #555;
+  }
+
+  label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+    text-align: left;
+  }
+
+  input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+  }
+
+  button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 100%;
+    font-size: 16px;
+  }
+
+  button:hover {
+    background-color: #0056b3;
+  }
+
+  a {
+    color: #007bff;
+    text-decoration: none;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+</style>
+
+<div class="signup">
             <div class="cont">
                 <p>all fields are required</p>
                 <form action="/account/signup" method="POST">
@@ -13,7 +72,7 @@
                     <label for="account_password">Password:</label>
                     <input type="password" id="password" name="password" required
                         pattern="(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{6,}"
-                        title="Password must be at least 12 characters long and include 1 capital letter, 1 number, and 1 special character"><br><br>
+                        title="Password must be at least 6 characters long and include 1 capital letter, 1 number, and 1 special character"><br><br>
                     <p>password must be minimum of 12 characters and include 1 capital letter, 1 number and 1 special
                         character
                     </p>
