@@ -4,16 +4,18 @@ require("dotenv").config();
 function authenticateToken(req, res, next) {
     const token = req.cookies.jwt;
     if (!token) {
-        return res.status(401).json({ message: "Unauthorized" });
+        req.flash("error", "Please login to view this page");
+        return res.redirect("/account/login");
     }
-    try {
-        const accountData = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
-        req.user = accountData;
+
+    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+        if (err) {
+            req.flash("error", "Session expired. Please login again");
+            return res.redirect("/account/login");
+        }
+        req.user = user;
         next();
-    } catch (error) {
-        console.error("Error verifying token", error);
-        return res.status(403).json({ message: "Forbidden" });
-    }
+    });
 }
 
 module.exports = authenticateToken;

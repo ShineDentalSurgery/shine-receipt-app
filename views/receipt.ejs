@@ -1,41 +1,54 @@
+<title>Receipt Form</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    padding: 20px;
+    background-color: #f4f4f4;
+  }
 
-  <title>Receipt Form</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 20px;
-      padding: 20px;
-      background-color: #f4f4f4;
-    }
-    .container {
-      max-width: 400px;
-      margin: auto;
-      background: white;
-      padding: 20px;
-      border-radius: 5px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    }
-    label {
-      font-weight: bold;
-    }
-    input, button {
-      width: 100%;
-      margin-top: 10px;
-      padding: 8px;
-    }
-    .service-entry {
-      display: flex;
-      gap: 10px;
-      margin-top: 10px;
-    }
-    .service-entry input {
-      flex: 1;
-    }
-    .price-input {
-      max-width: 120px;
-    }
-  </style>
+  .container {
+    max-width: 400px;
+    margin: auto;
+    background: white;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+
+  label {
+    font-weight: bold;
+  }
+
+  input,
+  button {
+    width: 100%;
+    margin-top: 10px;
+    padding: 8px;
+  }
+
+  .service-entry {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+  }
+
+  .service-entry input {
+    flex: 1;
+  }
+
+  .price-input {
+    max-width: 120px;
+  }
+
+  .mode-of-payment {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: row;
+  }
+</style>
 </head>
+
 <body>
   <div class="container">
     <h2>Create Receipt</h2>
@@ -44,7 +57,7 @@
       <input type="text" id="patient_name" name="patient_name" required />
 
       <label for="phone_number">Phone Number:</label>
-      <input type="text" id="phone_number" name="phone_number" required />
+      <input type="text" id="phone_number" name="patient_phone" required />
 
       <label>Services:</label>
       <div id="servicesContainer">
@@ -53,10 +66,37 @@
       <button type="button" onclick="addService()">Add Service</button>
 
       <!-- Hidden field that will hold the combined services (names only) -->
-      <input type="hidden" id="services" name="services" />
+      <input type="hidden" id="service" name="service" />
 
-      <label for="total">Total Amount ($):</label>
+      <label for="total">Total Amount (UGX):</label>
       <input type="number" id="total" name="total" step="0.01" readonly required />
+      <label>Mode of Payment:</label>
+
+
+      <section class="mode-of-payment">
+        <div>
+          <div>
+            <label for="cash">Cash</label>
+            <label for="mobile_money">Mobile Money</label>
+            <label for="visa">Visa</label>
+          </div>
+        </div>
+        <div>
+          <input type="radio" id="cash" name="mode_of_payment" value="cash" required>
+          <input type="radio" id="mobile_money" name="mode_of_payment" value="mobile money" required>
+          <input type="radio" id="visa" name="mode_of_payment" value="visa" required>
+
+        </div>
+
+      </section>
+
+
+
+      <label for="balance">Amount Paid (UGX):</label>
+      <input type="number" id="amount_paid" name="amount_paid" value="0" step="0.01" required />
+
+      <!-- Hidden field for balance -->
+      <input type="hidden" id="balance" name="balance" />
 
       <button type="submit">Submit Receipt</button>
     </form>
@@ -84,7 +124,7 @@
       servicePrice.className = "price-input";
       servicePrice.step = "0.01";
       servicePrice.required = true;
-      
+
       // When the price changes, recalc the total
       servicePrice.addEventListener("input", calculateTotal);
 
@@ -110,21 +150,33 @@
         }
       });
       document.getElementById("total").value = total.toFixed(2);
+      calculateBalance();
     }
 
+    // Function to calculate the balance
+    function calculateBalance() {
+      const total = parseFloat(document.getElementById("total").value) || 0;
+      const amountPaid = parseFloat(document.getElementById("amount_paid").value) || 0;
+      const balance = total - amountPaid;
+      document.getElementById("balance").value = balance.toFixed(2);
+    }
+
+    // Add event listener to recalculate balance when amount paid changes
+    document.getElementById("amount_paid").addEventListener("input", calculateBalance);
+
     // On form submission, combine all service names into a single hidden field "services"
-    document.getElementById("receiptForm").addEventListener("submit", function(event) {
+    document.getElementById("receiptForm").addEventListener("submit", function (event) {
       const serviceEntries = document.querySelectorAll("#servicesContainer .service-entry");
       const servicesArray = [];
       serviceEntries.forEach(entry => {
         // Get the service name from the first input of each entry
         const nameInput = entry.querySelector('input[type="text"]');
-        if(nameInput && nameInput.value.trim() !== "") {
+        if (nameInput && nameInput.value.trim() !== "") {
           servicesArray.push(nameInput.value.trim());
         }
       });
       // Store the combined service names as a JSON string
-      document.getElementById("services").value = JSON.stringify(servicesArray);
+      document.getElementById("service").value = JSON.stringify(servicesArray);
     });
 
     // Optionally add one service entry by default when the page loads
@@ -133,4 +185,5 @@
     });
   </script>
 </body>
+
 </html>

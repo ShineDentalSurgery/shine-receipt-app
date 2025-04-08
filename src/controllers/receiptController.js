@@ -1,9 +1,9 @@
 const ReceiptItem = require("../models/receiptModel");
 
 async function addReceipt(req, res) {
-    const { patient_name, phone_number, services, total } = req.body;
-    console.log("Received data:", { patient_name, phone_number, services, total }); // Add logging
-    const receipt = await ReceiptItem.createReceipt(patient_name, phone_number, services, total);
+    const { patient_name, patient_phone, service, total, mode_of_payment, amount_paid, balance} = req.body;
+    console.log("Received data:", { patient_name, patient_phone, service, total, mode_of_payment, amount_paid, balance}); // Add logging
+    const receipt = await ReceiptItem.createReceipt(patient_name, patient_phone, service, total, mode_of_payment, amount_paid, balance);
 
     if (receipt) {
         const data = await ReceiptItem.getReceipts();
@@ -23,8 +23,8 @@ async function getAllReceipts(req, res, next) {
 
         // Process services field for each receipt
         data.forEach(receipt => {
-            if (typeof receipt.services === "string") {
-                receipt.services = JSON.parse(receipt.services).join(", "); // Convert array string to a readable format
+            if (typeof receipt.service === "string") {
+                receipt.service = JSON.parse(receipt.service).join(", "); // Convert array string to a readable format
             }
         });
 
@@ -48,8 +48,8 @@ async function receiptDetails(req, res, next) {
 
         // Process services field for each receipt
 
-        if (typeof data.services === "string") {
-            data.services = JSON.parse(data.services).join(", "); // Convert array string to a readable format
+        if (typeof data.service === "string") {
+            data.service = JSON.parse(data.service).join(", "); // Convert array string to a readable format
         }
 
 

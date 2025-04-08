@@ -1,10 +1,10 @@
 const initializeDatabase = require("../config/db");
 
-async function createReceipt(patient_name, phone_number, services, total) {
+async function createReceipt(patient_name, patient_phone, service, total, mode_of_payment, amount_paid, balance) {
     const db = await initializeDatabase();
     try {
-        const sql = "INSERT INTO receipts (patient_name, phone_number, services, total) VALUES (?, ?, ?, ?)";
-        const [result] = await db.query(sql, [patient_name, phone_number, services, total]); 
+        const sql = "INSERT INTO receipts (patient_name, patient_phone, service, total, mode_of_payment,amount_paid, balance) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        const [result] = await db.query(sql, [patient_name, patient_phone, service, total, mode_of_payment, amount_paid, balance]);
         return result; // Return the result
     } catch (error) {
         console.error("Error adding receipt:", error);
@@ -22,7 +22,7 @@ async function getReceiptDetails(id) {
             [id]
         );
         console.log("query results: ", result);
-        return result.length > 0 ? result[0] : null;        
+        return result.length > 0 ? result[0] : null;
     } catch (error) {
         console.error("get receipt details error:", error);
         throw new Error("failed to retrieve receipt details");

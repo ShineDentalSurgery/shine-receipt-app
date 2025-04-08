@@ -4,7 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%= title %></title>
-
+    <link rel="stylesheet" href="/styles.css">
+    <style>
+        .hidden {
+            display: none;
+        }
+    </style>
 </head>
 <body>
     <div class="table">
@@ -18,37 +23,47 @@
                     <th>Phone Number</th>
                     <th>Services</th>
                     <th>Total</th>
+                    <th>Mode of Payment</th>
+                    <th>Amount Paid</th>
+                    <th>Balance</th>
                 </tr>
             </thead>
             <tbody>
                 <% receipts.forEach(receipt => { %>
-                    <tr id="item-list">
+                    <tr class="item-list">
                         <td><%= receipt.id %></td>
-                        <td id="names"> <a href="/receiptDetails/<%= receipt.id %>"><%= receipt.patient_name %></a> </td>
-                        <td><%= receipt.phone_number %></td>
-                        <td><%= receipt.services %></td>
+                        <td class="names"> <a href="/receiptDetails/<%= receipt.id %>"><%= receipt.patient_name %></a> </td>
+                        <td><%= receipt.patient_phone %></td>
+                        <td><%= Array.isArray(receipt.service) ? receipt.service.join(", ") : receipt.service %></td>
                         <td><%= receipt.total %></td>
+                        <td><%= receipt.mode_of_payment %></td>
+                        <td><%= receipt.amount_paid %></td>
+                        <td><%= receipt.balance %></td>
                     </tr>
                 <% }) %>
             </tbody>
         </table>
     </div>
+    <script>
+        document.getElementById('filter').addEventListener('input', function() {
+            const filterValue = this.value.toLowerCase();
+            const rows = document.querySelectorAll(".item-list");
+
+            rows.forEach(row => {
+                const cells = row.querySelectorAll("td");
+                let match = false;
+                cells.forEach(cell => {
+                    if (cell.textContent.toLowerCase().includes(filterValue)) {
+                        match = true;
+                    }
+                });
+                if (match) {
+                    row.classList.remove('hidden');
+                } else {
+                    row.classList.add('hidden');
+                }
+            });
+        });
+    </script>
 </body>
 </html>
-
-<script>
-    document.getElementById('filter').addEventListener('input', function() {
-        const filterValue = this.value.toLowerCase();
-        const items = document.querySelectorAll("#item-list td");
-        console.log(items)
-
-        items.forEach(item => {
-            const text = item.textContent.toLowerCase();
-            if (text.includes(filterValue)) {
-                item.classList.remove('hidden');                
-            } else {
-                item.classList.add('hidden')
-            }
-        })
-    })
-</script>

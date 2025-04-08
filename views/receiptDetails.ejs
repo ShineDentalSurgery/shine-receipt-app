@@ -1,40 +1,87 @@
+
+<style>
+    h1 {
+        text-align: center;
+        padding-bottom: 10px;
+        font-size: 18px;
+    }
+
+</style>
 <body>
     <div class="receipt-card">
         <div class="receipt">
-            <img src="/images/reciept_logo.png" alt="Receipt Logo">
-            <table class="receipt-table">
-                <tr>
-                    <th>Patient Name</th>
-                    <td>
+            <section>
+                <img src="/images/reciept_logo.png" alt="Receipt Logo">
+                <div class="first">
+                    <h1>Payment Receipt</h1>
+                    <span> <strong>Date: </strong>
+                        <%= new Date(receipt.created_at).toLocaleDateString('en-GB') %>
+                    </span>
+                    <span> <strong>Name: </strong>
                         <%= receipt.patient_name %>
-                    </td>
-                </tr>
-                <tr>
-                    <th>Phone Number</th>
-                    <td>
-                        <%= receipt.phone_number %>
-                    </td>
-                </tr>
-                <tr>
-                    <th>Services</th>
-                    <td>
-                        <%= Array.isArray(receipt.services) ? receipt.services.join(", ") : receipt.services %></td>
-                </tr>
-                <tr>
-                    <th>Total</th>
-                    <td>UGX <%= receipt.total %></td>
-                </tr>
-            </table>
-            <br>
-            <br>
-            <br>
-            <p>BY: _______________</p>
+                    </span>
+                    <span> <strong>Tel: </strong>
+                        <%= receipt.patient_phone %>
+                    </span>
+                </div>
+            </section>
+
+            <section>
+                <table class="receipt-table">
+                    <thead>
+                        <tr>
+                            <th>Services</th>
+                            <th>Mode of Payment</th>
+                            <th>Amount Paid</th>
+                            <th>Balance</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="item-list">
+                            <td>
+                                <%= receipt.service %>
+                            </td>
+                            <td>
+                                <%= receipt.mode_of_payment %>
+                            </td>
+                            <td>
+                                UGX <%= receipt.amount_paid %>
+                            </td>
+                            <td>
+                                UGX <%= receipt.balance %>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section>
+                <div class="total">
+                    <span> <strong> Amount Paid </strong>
+                        UGX <%= receipt.amount_paid %>
+                    </span>
+                    <br>
+                    <span id="amount-in-words"></span>
+                </div>
+
+                <br>
+                <br>
+                <br>
+                <p>BY: _______________</p>
+
+                <br>
+                <div class="last">
+                    <p>Thank you for choosing Shine Dental Surgery</p>
+                </div>
+            <%- include('./partials/footer') %>
+
+            </section>
         </div>
     </div>
-    
+
     <button id="print-button">Print</button>
 
-                            <a href="/receipts"><button id="back">Back</button></a>
+    <a href="/receipts"><button id="back">Back</button></a>
 
 </body>
 
@@ -44,4 +91,27 @@
     document.getElementById('print-button').addEventListener('click', function () {
         window.print();
     });
+
+    // Function to convert number to words
+    function numberToWords(num) {
+        const a = [
+            '', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen'
+        ];
+        const b = [
+            '', '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'
+        ];
+
+        const numberToWordsHelper = (n) => {
+            if (n < 20) return a[n];
+            if (n < 100) return b[Math.floor(n / 10)] + (n % 10 ? '-' + a[n % 10] : '');
+            if (n < 1000) return a[Math.floor(n / 100)] + ' hundred' + (n % 100 ? ' and ' + numberToWordsHelper(n % 100) : '');
+            return numberToWordsHelper(Math.floor(n / 1000)) + ' thousand' + (n % 1000 ? ' ' + numberToWordsHelper(n % 1000) : '');
+        };
+
+        return numberToWordsHelper(num);
+    }
+
+    // Convert total amount to words and display it
+    const totalAmount = parseFloat('<%= receipt.amount_paid %>');
+    document.getElementById('amount-in-words').innerText = numberToWords(totalAmount) + ' shillings';
 </script>

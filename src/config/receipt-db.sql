@@ -4,15 +4,16 @@ USE receipt_app;
 
 CREATE TABLE receipts (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    client_name VARCHAR(255) NOT NULL,
+    patient_name VARCHAR(255) NOT NULL,
+    patient_phone VARCHAR(20) NOT NULL,
+    service VARCHAR(255) NOT NULL,
     total DECIMAL(10,2) NOT NULL,
+    mode_of_payment ENUM('cash', 'mobile money', 'visa') NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 ALTER TABLE receipts 
-CHANGE client_name patient_name VARCHAR(255) NOT NULL, 
-ADD phone_number VARCHAR(20) NOT NULL AFTER patient_name, 
-ADD services JSON NOT NULL AFTER phone_number;
+ADD amount_paid VARCHAR(20) NOT NULL AFTER mode_of_payment;
 
 
 CREATE TABLE receipt_items (

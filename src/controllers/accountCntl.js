@@ -63,7 +63,7 @@ async function accountLogin(req, res) {
         const accessToken = jwt.sign(account, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' });
 
         // Set token in cookies
-        res.cookie("jwt", accessToken, { httpOnly: true, secure: process.env.NODE_ENV !== 'development', maxAge: 3600 * 1000 });
+        res.cookie("jwt", accessToken, { httpOnly: true, secure: process.env.NODE_ENV !== 'development', maxAge: 3600 * 3000 });
 
         // Store user session data and render dashboard
         req.session.user = account;

@@ -191,6 +191,17 @@ th {
     padding: 8px;
 }
 
+.first {
+    display: flex;
+    flex-direction: column;
+    line-height: 25px;
+}
+.total {
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+}
+
 .receipt-table th {
     background-color: #f2f2f2;
     font-weight: bold;
@@ -207,6 +218,10 @@ th {
 
 .receipt img {
     width: 100%;
+}
+
+.last {
+    text-align: center;
 }
 
 footer {
