@@ -340,29 +340,39 @@ p a:hover {
     }
 
     .receipt-card,
+    .receipt,
     .receipt-card * {
         visibility: visible;
     }
 
     .receipt {
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.0);
+        box-shadow: none;
+        background-image: url('/images/shinedental-water_mark.png'); /* Ensure the correct path to the image */
+        background-size: 400px 300px; /* Set specific width and height for the background image */
+        background-position: center; /* Centers the image */
+        background-repeat: no-repeat; /* Prevents the image from repeating */
         width: 100%;
         height: auto;
-        top: 0;
-
+        padding: 20px;
+        position: relative;
+        
+        
     }
 
     .receipt-card {
-        position: absolute;             
+        position: absolute;
         width: 100%;
         margin: 0;
     }
 
- 
-
     .receipt-table {
         width: 100%;
         border-collapse: collapse;
+    }
+
+    footer {
+        background-color: white;
+        color: #ddd;
     }
 
     .receipt-table th,

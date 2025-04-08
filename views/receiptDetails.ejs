@@ -5,23 +5,16 @@
         font-size: 18px;
     }
 
-    .receipt-card {
-        position: relative;
+    .receipt {
+        background-image: url('/images/shinedental-water_mark.png'); /* Ensure the correct path to the image */
+        background-size: 400px 300px; /* Set specific width and height for the background image */
+        background-repeat: no-repeat; /* Prevents the image from repeating */
+        background-position: center; /* Centers the image */
+
+
     }
 
-    .receipt-card::before {
-        content: "Shine Dental Surgery";
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        font-size: 50px;
-        color: rgba(0, 0, 0, 0.1); /* Light gray for watermark effect */
-        white-space: nowrap;
-        z-index: -1;
-        pointer-events: none;
-    }
-</style>
+    </style>
 <body>
     <div class="receipt-card">
         <div class="receipt">
