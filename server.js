@@ -64,7 +64,7 @@ app.use("/account", accountRoutes);
 
 // Protected route 
 app.get('/', authenticateToken, (req, res) => {
-    res.render('dashboard', { user: req.user });
+    res.render('index', { title:'Dashboard', user: req.user });
 });
 
 // Start the server
