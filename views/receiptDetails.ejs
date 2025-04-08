@@ -1,4 +1,3 @@
-
 <style>
     h1 {
         text-align: center;
@@ -6,6 +5,22 @@
         font-size: 18px;
     }
 
+    .receipt-card {
+        position: relative;
+    }
+
+    .receipt-card::before {
+        content: "Shine Dental Surgery";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 50px;
+        color: rgba(0, 0, 0, 0.1); /* Light gray for watermark effect */
+        white-space: nowrap;
+        z-index: -1;
+        pointer-events: none;
+    }
 </style>
 <body>
     <div class="receipt-card">
