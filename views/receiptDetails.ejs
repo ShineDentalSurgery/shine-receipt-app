@@ -113,7 +113,9 @@
             if (n < 20) return a[n];
             if (n < 100) return b[Math.floor(n / 10)] + (n % 10 ? '-' + a[n % 10] : '');
             if (n < 1000) return a[Math.floor(n / 100)] + ' hundred' + (n % 100 ? ' and ' + numberToWordsHelper(n % 100) : '');
-            return numberToWordsHelper(Math.floor(n / 1000)) + ' thousand' + (n % 1000 ? ' ' + numberToWordsHelper(n % 1000) : '');
+            if (n < 1000000) return numberToWordsHelper(Math.floor(n / 1000)) + ' thousand' + (n % 1000 ? ' ' + numberToWordsHelper(n % 1000) : '');
+            if (n < 1000000000) return numberToWordsHelper(Math.floor(n / 1000000)) + ' million' + (n % 1000000 ? ' ' + numberToWordsHelper(n % 1000000) : '');
+            return numberToWordsHelper(Math.floor(n / 1000000000)) + ' billion' + (n % 1000000000 ? ' ' + numberToWordsHelper(n % 1000000000) : '');
         };
 
         return numberToWordsHelper(num);
