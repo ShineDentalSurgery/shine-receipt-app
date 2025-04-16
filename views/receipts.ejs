@@ -19,6 +19,7 @@
             <thead>
                 <tr>
                     <th>ID</th>
+                    <th>Date</th>
                     <th>Patient Name</th>
                     <th>Phone Number</th>
                     <th>Services</th>
@@ -32,6 +33,7 @@
                 <% receipts.forEach(receipt => { %>
                     <tr class="item-list">
                         <td><%= receipt.id %></td>
+                        <td><%= new Date(receipt.created_at).toLocaleDateString('en-GB') %></td>
                         <td class="names"> <a href="/receiptDetails/<%= receipt.id %>"><%= receipt.patient_name %></a> </td>
                         <td><%= receipt.patient_phone %></td>
                         <td><%= Array.isArray(receipt.service) ? receipt.service.join(", ") : receipt.service %></td>

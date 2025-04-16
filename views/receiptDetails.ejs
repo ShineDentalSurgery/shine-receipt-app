@@ -65,7 +65,7 @@
 
             <section>
                 <div class="total">
-                    <span> <strong> Amount Paid </strong>
+                    <span class="paid_amount"> <strong> Amount Paid </strong>
                         UGX <%= receipt.amount_paid %>
                     </span>
                     <br>
@@ -121,7 +121,40 @@
         return numberToWordsHelper(num);
     }
 
+    // Format numbers with commas
+    function formatWithCommas(num) {
+        return num.toLocaleString('en-US');
+    }
+
     // Convert total amount to words and display it
     const totalAmount = parseFloat('<%= receipt.amount_paid %>');
-    document.getElementById('amount-in-words').innerText = numberToWords(totalAmount) + ' shillings';
+
+    // Function to capitalize the first letter of a string
+    function capitalizeFirstLetter(string) {
+        return string.charAt(0).toUpperCase() + string.slice(1);
+    }
+
+    // Generate the amount in words and capitalize the first letter
+    const amountInWords = numberToWords(totalAmount) + ' shillings';
+    document.getElementById('amount-in-words').innerText = capitalizeFirstLetter(amountInWords);
+
+    // Format amount_paid and balance with commas
+    const amountPaidElement = document.querySelector('.item-list td:nth-child(3)');
+    const balanceElement = document.querySelector('.item-list td:nth-child(4)');
+    const paid_amount = document.querySelector('.paid_amount');
+
+    const amountPaid = parseFloat('<%= receipt.amount_paid %>');
+    const balance = parseFloat('<%= receipt.balance %>');
+
+    if (amountPaidElement) {
+        amountPaidElement.innerText = 'UGX ' + formatWithCommas(amountPaid);
+    }
+
+    if (balanceElement) {
+        balanceElement.innerText = 'UGX ' + formatWithCommas(balance);
+    }
+
+    if(paid_amount) {
+        paid_amount.innerText = 'UGX' + formatWithCommas(amountPaid)
+    }
 </script>
