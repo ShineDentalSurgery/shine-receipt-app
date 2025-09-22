@@ -16,6 +16,21 @@ async function addReceipt(req, res) {
     }
 }
 
+async function deleteReciept(req, res) {
+    try {
+        const receipt_id = req.params.receipt_id;
+        const deleted = await ReceiptItem.deleteReceipt(receipt_id);
+        if (deleted) {
+            res.status(200).json({ message: "Receipt deleted successfully" });
+        } else {
+            res.status(404).json({ message: "Receipt not found" });
+        }
+    } catch (error) {
+        console.error("Error deleting receipt:", error);
+        res.status(500).json({ message: "Error deleting receipt" });
+    }
+}
+
 async function getAllReceipts(req, res, next) {
     try {
         const data = await ReceiptItem.getReceipts(); // Fetch all receipts
@@ -67,5 +82,32 @@ async function receiptDetails(req, res, next) {
     }
 }
 
-module.exports = { addReceipt, getAllReceipts, receiptDetails };
+async function updateReceipt(req, res) {
+    try {
+        const receipt_id = req.params.receipt_id;
+        const { patient_name, patient_phone, service, total, mode_of_payment, amount_paid, balance } = req.body;
+        const updated = await ReceiptItem.updateReceipt(
+            receipt_id,
+            patient_name,
+            patient_phone,
+            service,
+            total,
+            mode_of_payment,
+            amount_paid,
+            balance
+        );
+        if (updated) {
+            res.status(200).json({ message: "Receipt updated successfully" });
+        } else {
+            res.status(404).json({ message: "Receipt not found or not updated" });
+        }
+
+        res.render()
+    } catch (error) {
+        console.error("Error updating receipt:", error);
+        res.status(500).json({ message: "Error updating receipt" });
+    }
+}
+
+module.exports = { addReceipt, getAllReceipts, receiptDetails, deleteReciept, updateReceipt };
 

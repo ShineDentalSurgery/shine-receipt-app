@@ -58,6 +58,7 @@ app.get("/receipt", require("./src/routes/baseroute"));
 app.use("/receipt", require("./src/routes/receiptRoutes"));
 app.use("/receipts", require("./src/routes/receiptRoutes"));
 app.use("/receiptDetails", require("./src/routes/receiptRoutes"));
+// app.use("/delete", require("./src/routes/receiptRoutes"));
 
 // login routes
 app.use("/account", accountRoutes);

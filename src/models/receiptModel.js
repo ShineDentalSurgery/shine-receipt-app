@@ -44,4 +44,44 @@ async function getReceipts() {
     }
 }
 
-module.exports = { createReceipt, getReceiptDetails, getReceipts };
+async function deleteReceipt(id) {
+    const db = await initializeDatabase();
+    try {
+        const [result] = await db.query("DELETE FROM receipts WHERE id = ?", [id]);
+        return result.affectedRows > 0; // Returns true if a row was deleted
+    } catch (error) {
+        console.error("Error deleting receipt:", error);
+        throw error;
+    } finally {
+        await db.end();
+    }
+}
+
+async function updateReceipt(id, patient_name, patient_phone, service, total, mode_of_payment, amount_paid, balance) {
+    const db = await initializeDatabase();
+    try {
+        const sql = `
+            UPDATE receipts
+            SET patient_name = ?, patient_phone = ?, service = ?, total = ?, mode_of_payment = ?, amount_paid = ?, balance = ?
+            WHERE id = ?
+        `;
+        const [result] = await db.query(sql, [
+            patient_name,
+            patient_phone,
+            service,
+            total,
+            mode_of_payment,
+            amount_paid,
+            balance,
+            id
+        ]);
+        return result.affectedRows > 0; // Returns true if a row was updated
+    } catch (error) {
+        console.error("Error updating receipt:", error);
+        throw error;
+    } finally {
+        await db.end();
+    }
+}
+
+module.exports = { createReceipt, getReceiptDetails, getReceipts, deleteReceipt, updateReceipt };

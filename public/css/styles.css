@@ -166,7 +166,20 @@ th, td {
     text-align: left;
 }
 th {
-    background-color: #f4f4f4;
+    background-color: #f4f4f4; /* Already present, keeps header light gray */
+}
+
+tbody tr:nth-child(even) {
+    background-color: #f3dede; /* Very faint gray for even rows */
+}
+
+tbody tr:nth-child(odd) {
+    background-color: #fff; /* Slightly different faint gray for odd rows */
+}
+
+/* Optionally, you can add a hover effect for better readability */
+tbody tr:hover {
+    background-color: #cbff9a;
 }
 
 .receipt-card {
