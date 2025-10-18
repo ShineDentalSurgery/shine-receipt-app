@@ -40,6 +40,12 @@ app.use((req, res, next) => {
     next();
 });
 
+// Middleware to attach user to res.locals
+app.use((req, res, next) => {
+    res.locals.user = req.user || null;
+    next();
+});
+
 /* ***********************
  * view engine and templates
  *************************/

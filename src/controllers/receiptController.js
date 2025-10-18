@@ -1,18 +1,24 @@
 const ReceiptItem = require("../models/receiptModel");
+const logger = require("../utils/logger"); // Add a logger utility
 
 async function addReceipt(req, res) {
-    const { patient_name, patient_phone, service, total, mode_of_payment, amount_paid, balance} = req.body;
-    console.log("Received data:", { patient_name, patient_phone, service, total, mode_of_payment, amount_paid, balance}); // Add logging
-    const receipt = await ReceiptItem.createReceipt(patient_name, patient_phone, service, total, mode_of_payment, amount_paid, balance);
+    try {
+        const { patient_name, patient_phone, service, total, mode_of_payment, amount_paid, balance } = req.body;
+        const receipt = await ReceiptItem.createReceipt(patient_name, patient_phone, service, total, mode_of_payment, amount_paid, balance);
 
-    if (receipt) {
-        const data = await ReceiptItem.getReceipts();
-        res.status(201).render("receipts", {
-            title: "Receipts",
-            receipts: data // Pass the receipt data to the view
-        });
-    } else {
-        res.status(500).json({ message: "Error adding receipt" });
+        if (receipt) {
+            const data = await ReceiptItem.getReceipts();
+            res.status(201).render("receipts", {
+                title: "Receipts",
+                receipts: data
+            });
+        } else {
+            logger.error("Failed to add receipt: Database operation returned null");
+            res.status(500).json({ message: "Error adding receipt" });
+        }
+    } catch (error) {
+        logger.error(`Error in addReceipt: ${error.message}`, error);
+        res.status(500).json({ message: "Internal server error" });
     }
 }
 
@@ -23,61 +29,63 @@ async function deleteReciept(req, res) {
         if (deleted) {
             res.status(200).json({ message: "Receipt deleted successfully" });
         } else {
+            logger.warn(`Receipt with ID ${receipt_id} not found`);
             res.status(404).json({ message: "Receipt not found" });
         }
     } catch (error) {
-        console.error("Error deleting receipt:", error);
+        logger.error(`Error in deleteReciept: ${error.message}`, error);
         res.status(500).json({ message: "Error deleting receipt" });
     }
 }
 
 async function getAllReceipts(req, res, next) {
     try {
-        const data = await ReceiptItem.getReceipts(); // Fetch all receipts
-        console.log(data);
-
-        // Process services field for each receipt
+        const data = await ReceiptItem.getReceipts();
         data.forEach(receipt => {
             if (typeof receipt.service === "string") {
-                receipt.service = JSON.parse(receipt.service).join(", "); // Convert array string to a readable format
+                receipt.service = JSON.parse(receipt.service).join(", ");
             }
         });
 
-        res.render("receipts", {
-            title: "Receipts List",
-            receipts: data // Pass the processed receipt data to the view
-        });
-
+        if (req.user.usertype === 'admin') {
+            return res.render("adminReceipts", {
+                title: "Admin Receipts",
+                receipts: data,
+                user: req.user
+            });
+        } else {
+            return res.render("receipts", {
+                title: "Receipts List",
+                receipts: data,
+                user: req.user
+            });
+        }
     } catch (error) {
-        console.error("Error fetching receipts:", error);
+        logger.error(`Error in getAllReceipts: ${error.message}`, error);
         next(error);
     }
 }
-
 
 async function receiptDetails(req, res, next) {
     try {
         const receipt_id = req.params.receipt_id;
         const data = await ReceiptItem.getReceiptDetails(receipt_id);
-        console.log("controller details: ", data);
-
-        // Process services field for each receipt
-
-        if (typeof data.service === "string") {
-            data.service = JSON.parse(data.service).join(", "); // Convert array string to a readable format
-        }
-
-
         if (!data) {
+            logger.warn(`Receipt details not found for ID ${receipt_id}`);
             return res.status(404).json({ message: "Receipt not found" });
         }
 
-        res.render("receiptDetails", {
+        if (typeof data.service === "string") {
+            data.service = JSON.parse(data.service).join(", ");
+        }
+
+        return res.render("receiptDetails", {
             title: "Receipt Details",
             receipt: data,
+            user: req.user
         });
     } catch (error) {
-        console.error("Error fetching receipt details:", error);
+        logger.error(`Error in receiptDetails: ${error.message}`, error);
         next(error);
     }
 }
@@ -86,6 +94,14 @@ async function updateReceipt(req, res) {
     try {
         const receipt_id = req.params.receipt_id;
         const { patient_name, patient_phone, service, total, mode_of_payment, amount_paid, balance } = req.body;
+
+        // Fetch the receipt details to pre-fill the form
+        const receipt = await ReceiptItem.getReceiptDetails(receipt_id);
+        if (!receipt) {
+            logger.warn(`Receipt with ID ${receipt_id} not found`);
+            return res.status(404).json({ message: "Receipt not found" });
+        }
+
         const updated = await ReceiptItem.updateReceipt(
             receipt_id,
             patient_name,
@@ -96,15 +112,19 @@ async function updateReceipt(req, res) {
             amount_paid,
             balance
         );
-        if (updated) {
-            res.status(200).json({ message: "Receipt updated successfully" });
-        } else {
-            res.status(404).json({ message: "Receipt not found or not updated" });
-        }
 
-        res.render()
+        if (updated) {
+            res.status(200).render("receiptEdit", {
+                message: "Receipt updated successfully",
+                receipt, // Pass the receipt object to the view
+                user: req.user
+            });
+        } else {
+            logger.warn(`Receipt with ID ${receipt_id} not updated`);
+            res.status(404).json({ message: "Receipt not updated" });
+        }
     } catch (error) {
-        console.error("Error updating receipt:", error);
+        logger.error(`Error in updateReceipt: ${error.message}`, error);
         res.status(500).json({ message: "Error updating receipt" });
     }
 }

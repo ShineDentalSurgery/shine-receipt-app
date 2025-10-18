@@ -1,0 +1,28 @@
+<form action="/receipts/edit/<%= receipt.id %>" method="POST">
+    <label for="patient_name">Patient Name:</label>
+    <input type="text" id="patient_name" name="patient_name" value="<%= receipt.patient_name %>" required>
+
+    <label for="patient_phone">Patient Phone:</label>
+    <input type="text" id="patient_phone" name="patient_phone" value="<%= receipt.patient_phone %>" required>
+
+    <label for="service">Service:</label>
+    <input type="text" id="service" name="service" value="<%= receipt.service %>" required>
+
+    <label for="total">Total:</label>
+    <input type="number" id="total" name="total" value="<%= receipt.total %>" required>
+
+    <label for="mode_of_payment">Mode of Payment:</label>
+    <select id="mode_of_payment" name="mode_of_payment">
+        <option value="cash" <%= receipt.mode_of_payment === 'cash' ? 'selected' : '' %>>Cash</option>
+        <option value="mobile money" <%= receipt.mode_of_payment === 'mobile money' ? 'selected' : '' %>>Mobile Money</option>
+        <option value="visa" <%= receipt.mode_of_payment === 'visa' ? 'selected' : '' %>>Visa</option>
+    </select>
+
+    <label for="amount_paid">Amount Paid:</label>
+    <input type="number" id="amount_paid" name="amount_paid" value="<%= receipt.amount_paid %>" required>
+
+    <label for="balance">Balance:</label>
+    <input type="number" id="balance" name="balance" value="<%= receipt.balance %>" required>
+
+    <button type="submit">Update Receipt</button>
+</form>

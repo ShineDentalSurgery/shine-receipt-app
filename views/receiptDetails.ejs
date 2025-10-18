@@ -14,6 +14,12 @@
 
     }
 
+    .hidden {
+        display: none;
+    }
+    .visible {
+        display: block;
+    }
     </style>
 <body>
     <div class="receipt-card">
@@ -90,6 +96,8 @@
     <button id="print-button">Print</button>
 
     <a href="/receipts"><button id="back">Back</button></a>
+
+    <button id="edit-button" class="<%= user.usertype === 'admin' ? 'visible' : 'hidden' %>">Edit</button>
 
 </body>
 

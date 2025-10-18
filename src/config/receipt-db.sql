@@ -8,6 +8,7 @@ CREATE TABLE receipts (
     patient_phone VARCHAR(20) NOT NULL,
     service VARCHAR(255) NOT NULL,
     total DECIMAL(10,2) NOT NULL,
+    balance DECIMAL(10,2) NOT NULL,
     mode_of_payment ENUM('cash', 'mobile money', 'visa') NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

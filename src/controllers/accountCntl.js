@@ -59,26 +59,20 @@ async function accountLogin(req, res) {
             });
         }
 
-        // Generate JWT token
-        const accessToken = jwt.sign(account, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' });
-
-        // Set token in cookies
-        res.cookie("jwt", accessToken, { httpOnly: true, secure: process.env.NODE_ENV !== 'development', maxAge: 3600 * 3000 });
-
-        // Store user session data and render dashboard
-        req.session.user = account;
-        res.render('index', {
-            title: "Dashboard",
-            user: req.session.user, // Pass user data to the view
+        // Generate a token and set it in cookies
+        const token = jwt.sign({ id: account.id, usertype: account.usertype }, process.env.ACCESS_TOKEN_SECRET, {
+            expiresIn: "1h",
         });
 
+        res.cookie("jwt", token, { httpOnly: true, secure: req.secure || process.env.NODE_ENV === "production" });
+        req.flash("success", "Login successful");
+        res.redirect("/receipts");
     } catch (error) {
         console.error('Error during login:', error);
         req.flash("error", "An error occurred during login");
         res.status(500).render('login', {
             title: "Login",
             messages: req.flash(),
-            email,
         });
     }
 }
