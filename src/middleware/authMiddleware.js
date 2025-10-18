@@ -3,6 +3,7 @@ require("dotenv").config();
 
 function authenticateToken(req, res, next) {
     const token = req.cookies.jwt;
+    console.log("JWT Token:", token);
     if (!token) {
         req.flash("error", "Please login to view this page");
         return res.redirect("/account/login");

@@ -1,0 +1,4 @@
+2025-10-18T20:20:54.991Z [ERROR]: Error in createReceipt: Unknown column 'balance' in 'field list' Unknown column 'balance' in 'field list'
+2025-10-18T20:20:55.005Z [ERROR]: Failed to add receipt: Database operation returned null
+2025-10-18T20:21:03.238Z [ERROR]: Error in createReceipt: Unknown column 'balance' in 'field list' Unknown column 'balance' in 'field list'
+2025-10-18T20:21:03.243Z [ERROR]: Failed to add receipt: Database operation returned null
