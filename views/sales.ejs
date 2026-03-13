@@ -1,0 +1,155 @@
+<section class="sales-page">
+    <div class="page-header">
+        <h1><i class="fa-solid fa-chart-bar"></i> Sales Report</h1>
+        <p class="lead">Sales classified by payment method with detailed breakdown</p>
+    </div>
+
+    <!-- Grand Totals Summary -->
+    <div class="summary-cards">
+        <div class="summary-card">
+            <h4><i class="fa-solid fa-receipt"></i> Total Receipts</h4>
+            <span class="summary-stat"><%= grandTotals.totalReceipts %></span>
+        </div>
+        <div class="summary-card">
+            <h4><i class="fa-solid fa-money-bill"></i> Total Sales</h4>
+            <span class="summary-stat"><%= grandTotals.totalSales.toFixed(2) %></span>
+        </div>
+        <div class="summary-card">
+            <h4><i class="fa-solid fa-wallet"></i> Total Paid</h4>
+            <span class="summary-stat"><%= grandTotals.totalAmountPaid.toFixed(2) %></span>
+        </div>
+        <div class="summary-card">
+            <h4><i class="fa-solid fa-balance-scale"></i> Total Balance</h4>
+            <span class="summary-stat balance"><%= grandTotals.totalBalance.toFixed(2) %></span>
+        </div>
+    </div>
+
+    <!-- Cash Sales Section -->
+    <div class="payment-section">
+        <div class="section-header">
+            <h2><i class="fa-solid fa-money-bill-1"></i> Cash Sales</h2>
+            <div class="section-stats">
+                <span class="stat-badge">Count: <strong><%= methodTotals.cash.count %></strong></span>
+                <span class="stat-badge">Total: <strong><%= methodTotals.cash.totalSales.toFixed(2) %></strong></span>
+                <span class="stat-badge">Paid: <strong><%= methodTotals.cash.totalAmountPaid.toFixed(2) %></strong></span>
+                <span class="stat-badge balance">Balance: <strong><%= methodTotals.cash.totalBalance.toFixed(2) %></strong></span>
+            </div>
+        </div>
+        <% if (salesByMethod.cash && salesByMethod.cash.length > 0) { %>
+            <div class="table-responsive">
+                <table class="sales-table">
+                    <thead>
+                        <tr>
+                            <th>Patient Name</th>
+                            <th>Phone</th>
+                            <th>Service</th>
+                            <th>Total</th>
+                            <th>Amount Paid</th>
+                            <th>Balance</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% salesByMethod.cash.forEach(function(receipt) { %>
+                            <tr>
+                                <td><%= receipt.patient_name %></td>
+                                <td><%= receipt.patient_phone %></td>
+                                <td><%= receipt.service %></td>
+                                <td><%= parseFloat(receipt.total).toFixed(2) %></td>
+                                <td class="amount-paid"><%= parseFloat(receipt.amount_paid).toFixed(2) %></td>
+                                <td class="balance"><%= parseFloat(receipt.balance).toFixed(2) %></td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+        <% } else { %>
+            <p class="no-data"><i class="fa-solid fa-inbox"></i> No cash sales</p>
+        <% } %>
+    </div>
+
+    <!-- Mobile Money Sales Section -->
+    <div class="payment-section">
+        <div class="section-header">
+            <h2><i class="fa-solid fa-mobile"></i> Mobile Money Sales</h2>
+            <div class="section-stats">
+                <span class="stat-badge">Count: <strong><%= methodTotals['mobile money'].count %></strong></span>
+                <span class="stat-badge">Total: <strong><%= methodTotals['mobile money'].totalSales.toFixed(2) %></strong></span>
+                <span class="stat-badge">Paid: <strong><%= methodTotals['mobile money'].totalAmountPaid.toFixed(2) %></strong></span>
+                <span class="stat-badge balance">Balance: <strong><%= methodTotals['mobile money'].totalBalance.toFixed(2) %></strong></span>
+            </div>
+        </div>
+        <% if (salesByMethod['mobile money'] && salesByMethod['mobile money'].length > 0) { %>
+            <div class="table-responsive">
+                <table class="sales-table">
+                    <thead>
+                        <tr>
+                            <th>Patient Name</th>
+                            <th>Phone</th>
+                            <th>Service</th>
+                            <th>Total</th>
+                            <th>Amount Paid</th>
+                            <th>Balance</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% salesByMethod['mobile money'].forEach(function(receipt) { %>
+                            <tr>
+                                <td><%= receipt.patient_name %></td>
+                                <td><%= receipt.patient_phone %></td>
+                                <td><%= receipt.service %></td>
+                                <td><%= parseFloat(receipt.total).toFixed(2) %></td>
+                                <td class="amount-paid"><%= parseFloat(receipt.amount_paid).toFixed(2) %></td>
+                                <td class="balance"><%= parseFloat(receipt.balance).toFixed(2) %></td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+        <% } else { %>
+            <p class="no-data"><i class="fa-solid fa-inbox"></i> No mobile money sales</p>
+        <% } %>
+    </div>
+
+    <!-- Visa Sales Section -->
+    <div class="payment-section">
+        <div class="section-header">
+            <h2><i class="fa-solid fa-credit-card"></i> Visa Sales</h2>
+            <div class="section-stats">
+                <span class="stat-badge">Count: <strong><%= methodTotals.visa.count %></strong></span>
+                <span class="stat-badge">Total: <strong><%= methodTotals.visa.totalSales.toFixed(2) %></strong></span>
+                <span class="stat-badge">Paid: <strong><%= methodTotals.visa.totalAmountPaid.toFixed(2) %></strong></span>
+                <span class="stat-badge balance">Balance: <strong><%= methodTotals.visa.totalBalance.toFixed(2) %></strong></span>
+            </div>
+        </div>
+        <% if (salesByMethod.visa && salesByMethod.visa.length > 0) { %>
+            <div class="table-responsive">
+                <table class="sales-table">
+                    <thead>
+                        <tr>
+                            <th>Patient Name</th>
+                            <th>Phone</th>
+                            <th>Service</th>
+                            <th>Total</th>
+                            <th>Amount Paid</th>
+                            <th>Balance</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% salesByMethod.visa.forEach(function(receipt) { %>
+                            <tr>
+                                <td><%= receipt.patient_name %></td>
+                                <td><%= receipt.patient_phone %></td>
+                                <td><%= receipt.service %></td>
+                                <td><%= parseFloat(receipt.total).toFixed(2) %></td>
+                                <td class="amount-paid"><%= parseFloat(receipt.amount_paid).toFixed(2) %></td>
+                                <td class="balance"><%= parseFloat(receipt.balance).toFixed(2) %></td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+        <% } else { %>
+            <p class="no-data"><i class="fa-solid fa-inbox"></i> No visa sales</p>
+        <% } %>
+    </div>
+</section>

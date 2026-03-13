@@ -60,9 +60,9 @@ input,textarea{
     margin-top:10px;
 }
 
-.item-grid{
+    .item-grid{
     display:grid;
-    grid-template-columns:2fr 1fr 1fr 1fr 1fr;
+    grid-template-columns:2fr 1fr 1fr 1fr;
     gap:10px;
 }
 
@@ -199,10 +199,7 @@ const html=`
 <input type="number" class="item-qty" value="1" min="1">
 </div>
 
-<div>
-<label>Unit</label>
-<input type="text" class="item-unit" placeholder="Piece">
-</div>
+
 
 <div>
 <label>Unit Price</label>
@@ -252,8 +249,6 @@ const name=entry.querySelector(".item-name").value;
 
 const qty=parseFloat(entry.querySelector(".item-qty").value)||0;
 
-const unit=entry.querySelector(".item-unit").value;
-
 const price=parseFloat(entry.querySelector(".item-price").value)||0;
 
 const amount=qty*price;
@@ -263,7 +258,6 @@ entry.querySelector(".item-amount").value=amount;
 items.push({
 item_name:name,
 qty:qty,
-unit:unit,
 unit_price:price,
 amount:amount
 });

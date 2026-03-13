@@ -18,3 +18,7 @@
 2026-03-09T13:43:06.113Z [ERROR]: Failed to add receipt: Database operation returned null
 2026-03-09T13:44:25.197Z [ERROR]: Error in createReceipt: Unknown column 'amount' in 'field list' Unknown column 'amount' in 'field list'
 2026-03-09T13:44:25.205Z [ERROR]: Failed to add receipt: Database operation returned null
+2026-03-10T12:45:41.366Z [ERROR]: Error in getInvoiceDetails: Table 'receipt_app.invoice_items' doesn't exist Table 'receipt_app.invoice_items' doesn't exist
+2026-03-10T12:45:41.368Z [ERROR]: Error in invoiceDetails: Failed to retrieve invoice details Failed to retrieve invoice details
+2026-03-10T12:48:23.132Z [ERROR]: Error in getInvoiceDetails: Table 'receipt_app.invoice_items' doesn't exist Table 'receipt_app.invoice_items' doesn't exist
+2026-03-10T12:48:23.133Z [ERROR]: Error in invoiceDetails: Table 'receipt_app.invoice_items' doesn't exist Table 'receipt_app.invoice_items' doesn't exist

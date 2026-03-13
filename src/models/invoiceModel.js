@@ -78,7 +78,8 @@ async function getInvoiceDetails(id) {
         return invoice;
     } catch (error) {
         logger.error(`Error in getInvoiceDetails: ${error.message}`, error);
-        throw new Error("Failed to retrieve invoice details");
+        // Re-throw the original error instead of a generic message
+        throw error;
     } finally {
         await db.end();
     }

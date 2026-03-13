@@ -12,6 +12,28 @@
         .hidden {
             display: none;
         }
+        .balance-cell {
+            font-weight: bold;
+        }
+        #scrollToBottomBtn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #589f14;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+            font-size: 20px;
+            display: none;
+            z-index: 1000;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        #scrollToBottomBtn:hover {
+            background-color: #4a7c0c;
+        }
     </style>
 </head>
 
@@ -25,11 +47,17 @@
             <h2>
                 <%= title %>
             </h2>
-            <input type="text" id="filter" placeholder="Search Patient.... ">
+            <div style="margin-bottom: 15px; display: flex; gap: 10px; align-items: center;">
+                <input type="text" id="filter" placeholder="Search Patient.... " style="flex: 1;">
+                <label for="filterDate" style="margin: 0; font-weight: bold;">Filter by Date:</label>
+                <input type="date" id="filterDate" style="padding: 8px; border-radius: 4px; border: 1px solid #ccc;">
+                <button onclick="clearFilters()" style="padding: 8px 12px; background-color: #6c757d; color: white; border: none; border-radius: 4px; cursor: pointer;">Clear</button>
+            </div>
 
-            <a href="/receipt"
+            <a href="/receipt/create"
                 style="margin-bottom: 15px; padding: 10px 20px; background-color: #589f14; color: white; text-decoration: none; border-radius: 4px; display: inline-block;">+
                 New Receipt</a>
+            <button id="scrollToBottomBtn" onclick="scrollToBottom()">↓</button>
             <table>
                 <thead>
                         <tr>
@@ -71,33 +99,12 @@
                                 </a>
                             </td>
                             <td>
-                                <% 
-                                    let servicesText = '';
-                                    if (Array.isArray(receipt.service)) {
-                                        servicesText = receipt.service.map(s => {
-                                            if (s && typeof s === 'object') return s.name || s.service || JSON.stringify(s);
-                                            return String(s);
-                                        }).join(', ');
-                                    } else {
-                                        servicesText = receipt.service;
-                                    }
-                                %>
-                                <%= servicesText %>
+                                <%= receipt.service %>
                             </td>
-                        <td><span style=" color: <%=Number(receipt.total)> 0 ? '#000000' : '#000000' %>; font-weight:
-                                    bold;">
-                                    <%= Number(receipt.total).toLocaleString('en-US') %>
-                                        </span></td>
+                        <td><span style="font-weight: bold;"><%= Number(receipt.total).toLocaleString('en-US') %></span></td>
                         <td><%= receipt.mode_of_payment %></td>
-                        <td><span style=" color: <%=Number(receipt.amount_paid)> 0 ? '#000000' : '#00000' %>; font-weight:
-                                    bold;">
-                                    UGX<%= Number(receipt.amount_paid).toLocaleString('en-US') %>
-                                        </span></td>
-                        <td><span style=" color: <%=Number(receipt.balance)> 0 ? '#dc3545' : '#28a745' %>; font-weight:
-                                    bold;">
-                                    UGX <%= Number(receipt.balance).toLocaleString('en-US') %>
-                                        </span>
-                            </td>
+                        <td><span style="font-weight: bold;">UGX<%= Number(receipt.amount_paid).toLocaleString('en-US') %></span></td>
+                        <td><span class="balance-cell" data-balance="<%= receipt.balance %>" style="font-weight: bold;"></span></td>
                             <td>
                                 <% if (user && user.usertype==='admin' ) { %>
                                     <button onclick="deleteReceipt('<%= receipt.id %>')"
@@ -111,21 +118,72 @@
         </div>
     </div>
     <script>
-        document.getElementById('filter').addEventListener('input', function () {
-            const filterValue = this.value.toLowerCase();
+        // Format balance cells with color and text
+        document.querySelectorAll(".balance-cell").forEach(balanceCell => {
+            const balance = Number(balanceCell.getAttribute('data-balance'));
+            const color = balance > 0 ? '#dc3545' : '#28a745';
+            const text = balance > 0 ? 'UGX ' + balance.toLocaleString('en-US') : 'Paid';
+            balanceCell.style.color = color;
+            balanceCell.textContent = text;
+        });
+
+        function applyFilters() {
+            const searchValue = document.getElementById('filter').value.toLowerCase();
+            const dateValue = document.getElementById('filterDate').value;
             const rows = document.querySelectorAll("tbody tr");
 
             rows.forEach(row => {
                 const cells = row.querySelectorAll("td");
-                let match = false;
-                cells.forEach(cell => {
-                    if (cell.textContent.toLowerCase().includes(filterValue)) {
-                        match = true;
+                let searchMatch = searchValue === ''; // Default to true if no search
+                let dateMatch = dateValue === ''; // Default to true if no date selected
+
+                // Check search match if search has value
+                if (searchValue !== '') {
+                    cells.forEach(cell => {
+                        if (cell.textContent.toLowerCase().includes(searchValue)) {
+                            searchMatch = true;
+                        }
+                    });
+                }
+
+                // Check date match if date is selected (date is in 3rd column)
+                if (dateValue) {
+                    const dateCell = cells[2]; // Date is the 3rd column
+                    if (dateCell) {
+                        const rowDate = new Date(dateCell.textContent.trim()).toISOString().split('T')[0];
+                        dateMatch = rowDate === dateValue;
                     }
-                });
-                row.style.display = match ? "" : "none";
+                }
+
+                row.style.display = (searchMatch && dateMatch) ? "" : "none";
             });
-        });
+        }
+
+        function clearFilters() {
+            document.getElementById('filter').value = '';
+            document.getElementById('filterDate').value = '';
+            applyFilters();
+        }
+
+        function scrollToBottom() {
+            window.scrollTo({
+                top: document.body.scrollHeight,
+                behavior: 'smooth'
+            });
+        }
+
+        function toggleScrollButton() {
+            const btn = document.getElementById('scrollToBottomBtn');
+            if (window.scrollY > 300) {
+                btn.style.display = 'block';
+            } else {
+                btn.style.display = 'none';
+            }
+        }
+
+        document.getElementById('filter').addEventListener('input', applyFilters);
+        document.getElementById('filterDate').addEventListener('change', applyFilters);
+        window.addEventListener('scroll', toggleScrollButton);
 
         function formatPhoneNumber(phoneNumber) {
             // Check if the number starts with '0' and replace it with '256'

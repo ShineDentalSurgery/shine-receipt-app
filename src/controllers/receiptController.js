@@ -9,6 +9,32 @@ async function addReceipt(req, res) {
 
         if (receipt) {
             const data = await ReceiptItem.getReceipts();
+            // Process service data to extract names only
+            data.forEach(receipt => {
+                if (typeof receipt.service === "string") {
+                    try {
+                        const parsed = JSON.parse(receipt.service);
+                        if (Array.isArray(parsed)) {
+                            receipt.service = parsed.map(item => {
+                                if (typeof item === 'object' && item.name) {
+                                    return item.name;
+                                }
+                                return typeof item === 'string' ? item : JSON.stringify(item);
+                            }).join(", ");
+                        } else if (typeof parsed === 'object' && parsed.name) {
+                            receipt.service = parsed.name;
+                        }
+                    } catch (e) {
+                        // Service is already a string, leave as is
+                    }
+                }
+
+                // Format phone numbers to replace '0' with '256'
+                if (receipt.patient_phone.startsWith('0')) {
+                    receipt.patient_phone = '256' + receipt.patient_phone.slice(1);
+                }
+            });
+
             res.status(201).render("receipts", {
                 title: "Receipts",
                 receipts: data,
@@ -51,7 +77,21 @@ async function getAllReceipts(req, res, next) {
         const data = await ReceiptItem.getReceipts();
         data.forEach(receipt => {
             if (typeof receipt.service === "string") {
-                receipt.service = JSON.parse(receipt.service).join(", ");
+                try {
+                    const parsed = JSON.parse(receipt.service);
+                    if (Array.isArray(parsed)) {
+                        receipt.service = parsed.map(item => {
+                            if (typeof item === 'object' && item.name) {
+                                return item.name;
+                            }
+                            return typeof item === 'string' ? item : String(item);
+                        }).join(", ");
+                    } else if (typeof parsed === 'object' && parsed.name) {
+                        receipt.service = parsed.name;
+                    }
+                } catch (e) {
+                    // Service is already a string, leave as is
+                }
             }
 
             // Format phone numbers to replace '0' with '256'
@@ -89,7 +129,21 @@ async function receiptDetails(req, res, next) {
         }
 
         if (typeof data.service === "string") {
-            data.service = JSON.parse(data.service).join(", ");
+            try {
+                const parsed = JSON.parse(data.service);
+                if (Array.isArray(parsed)) {
+                    data.service = parsed.map(item => {
+                        if (typeof item === 'object' && item.name) {
+                            return item.name;
+                        }
+                        return typeof item === 'string' ? item : String(item);
+                    }).join(", ");
+                } else if (typeof parsed === 'object' && parsed.name) {
+                    data.service = parsed.name;
+                }
+            } catch (e) {
+                // Service is already a string, leave as is
+            }
         }
 
         // Log current signed-in user for debugging

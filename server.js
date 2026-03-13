@@ -15,6 +15,9 @@ const accountRoutes = require('./src/routes/account-route');
 const baseRoutes = require('./src/routes/baseroute');
 require('dotenv').config();
 
+// logging utility
+const logger = require('./src/utils/logger');
+
 const app = express();
 app.use(express.json());
 app.use(cors());
@@ -57,18 +60,16 @@ app.set("layout", "./layouts/layout");
 // Routes
 app.use(static);
 
-// Serve views folder
-app.use("/", baseRoutes);
-
-app.get("/receipt", require("./src/routes/baseroute"));
-
-app.use("/receipt", require("./src/routes/receiptRoutes"));
-app.use("/receipts", require("./src/routes/receiptRoutes"));
-app.use("/receiptDetails", require("./src/routes/receiptRoutes"));
-// app.use("/delete", require("./src/routes/receiptRoutes"));
+// Consolidated receipt routes - mount on multiple paths for compatibility
+app.use("/receipts", receiptRoutes);
+app.use("/receipt", receiptRoutes);
+app.use("/receiptDetails", receiptRoutes);
 
 // Invoice routes
 app.use("/invoices", invoiceRoutes);
+
+// Home and base routes (must come AFTER specific routes to avoid catching all requests)
+app.use("/", baseRoutes);
 
 // login routes
 app.use("/account", accountRoutes);

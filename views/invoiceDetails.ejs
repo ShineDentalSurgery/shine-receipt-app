@@ -340,9 +340,9 @@
             <thead>
                 <tr>
                     <th>#</th>
-                    <th>Item Name</th>
+                    <th>Treatment</th>
                     <th>Qty</th>
-                    <th>Unit</th>
+                    <!-- <th>Unit</th> -->
                     <th>Unit Price</th>
                     <th>Amount</th>
                 </tr>
@@ -366,9 +366,9 @@
                             <%= item.qty %>
                         </td>
 
-                        <td>
+                        <!-- <td>
                             <%= item.unit || 'Piece' %>
-                        </td>
+                        </td> -->
 
                         <td>UGX <%= parseFloat(item.unit_price).toLocaleString() %>
                         </td>
@@ -407,7 +407,7 @@
                 <div class="terms">
                     <br>
                     <strong>
-                        <div>Terms $ Conditions</div>
+                        <div>Terms & Conditions</div>
                     </strong>
                     <div>Total Payment due in 30 days</div>
                 </div>

@@ -142,7 +142,7 @@
                     <%= receipt.id %>
                 </span>
 
-                <span><strong>Patient Number:</strong> SDS/<%= new Date().getFullYear() %>/<%= receipt.id || '' %></span>
+                <span><strong>Patient Number:</strong> SDS/<%= new Date().getFullYear().toString().slice(-2) %>/<%= receipt.id || '' %></span>
             </div>
 
 
@@ -187,7 +187,17 @@
                         <tr>
 
                             <td>
-                                <%= item.name || item.service || item %>
+                                <% 
+                                    let serviceName = '';
+                                    if (typeof item === 'string') {
+                                        serviceName = item;
+                                    } else if (item && typeof item === 'object') {
+                                        serviceName = item.name || item.service || JSON.stringify(item);
+                                    } else {
+                                        serviceName = String(item);
+                                    }
+                                %>
+                                <%= serviceName %>
                             </td>
 
                             <td>
@@ -314,7 +324,7 @@
             return convert(num);
         }
 
-        const totalAmount = Math.round(Number(<%= receipt.amount_paid || receipt.amount_paid || 0 %>) || 0);
+        const totalAmount = Math.round(Number('<%= receipt.amount_paid || receipt.amount_paid || 0 %>') || 0);
 
         function numberToWordsFull(num) {
             if (num === 0) return 'zero';

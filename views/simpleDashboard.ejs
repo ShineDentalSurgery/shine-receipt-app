@@ -1,9 +1,55 @@
 <section class="dashboard-simple">
     <div class="dashboard-header">
         <h1><i class="fa-solid fa-gauge-high"></i> Welcome</h1>
-        <p class="lead">Quick access to receipts and invoices — create and view what you need.</p>
+        <p class="lead">Today's sales and balances at a glance.</p>
     </div>
 
+    <!-- Daily Metrics Row -->
+    <div class="dash-grid">
+        <div class="dash-card metrics-card">
+            <div class="card-head">
+                <h3><i class="fa-solid fa-chart-line fa-lg"></i> Daily Sales</h3>
+                <span class="stat large-stat"><%= dailySales %></span>
+            </div>
+            <div class="card-body">
+                <p class="metric-label">Transactions: <strong><%= todayReceiptsCount %></strong></p>
+            </div>
+        </div>
+
+        <div class="dash-card metrics-card">
+            <div class="card-head">
+                <h3><i class="fa-solid fa-wallet fa-lg"></i> Amount Paid</h3>
+                <span class="stat large-stat"><%= dailyAmountPaid %></span>
+            </div>
+            <div class="card-body">
+                <p class="metric-label">Today's Payments</p>
+            </div>
+        </div>
+
+        <div class="dash-card metrics-card">
+            <div class="card-head">
+                <h3><i class="fa-solid fa-balance-scale fa-lg"></i> Daily Balance</h3>
+                <span class="stat large-stat balance-stat"><%= dailyBalance %></span>
+            </div>
+            <div class="card-body">
+                <p class="metric-label">Outstanding Balance</p>
+            </div>
+        </div>
+
+        <!-- <div class="dash-card metrics-card">
+            <div class="card-head">
+                <h3><i class="fa-solid fa-chart-bar fa-lg"></i> Sales Report</h3>
+            </div>
+            <div class="card-body">
+                <p class="metric-label">View classified sales by payment method</p>
+                <div class="card-actions">
+                    <a href="/sales" class="btn btn-primary"><i class="fa-solid fa-chart-bar"></i> View Sales</a>
+                </div>
+            </div>
+        </div> -->
+    </div>
+
+    <!-- Receipts and Invoices Section -->
     <div class="dash-grid">
         <div class="dash-card">
             <div class="card-head">
@@ -16,7 +62,7 @@
             <div class="card-body">
                 <div class="card-actions">
                     <a href="/receipts" class="btn btn-outline"><i class="fa-solid fa-list"></i> View</a>
-                    <a href="/receipt" class="btn btn-primary"><i class="fa-solid fa-plus-circle"></i> New</a>
+                    <a href="/receipt/create" class="btn btn-primary"><i class="fa-solid fa-plus-circle"></i> New</a>
                 </div>
 
                 <% if (recentReceipts && recentReceipts.length) { %>

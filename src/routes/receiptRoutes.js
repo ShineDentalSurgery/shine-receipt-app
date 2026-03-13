@@ -3,7 +3,11 @@ const router = express.Router();
 const receiptController = require("../controllers/receiptController");
 const authenticateToken = require("../middleware/authMiddleware");
 const adminMiddleware = require("../middleware/adminMiddleware");
+const logger = require("../utils/logger");
 
+router.get("/create", authenticateToken, (req, res) => {
+    res.render("receipt", { title: "Create Receipt", user: req.user });
+});
 router.post("/create", authenticateToken, receiptController.addReceipt);
 router.post("/edit/:receipt_id", authenticateToken, adminMiddleware, receiptController.updateReceipt)
 router.get("/", authenticateToken, receiptController.getAllReceipts);
@@ -24,7 +28,7 @@ router.get("/edit/:receipt_id", authenticateToken, adminMiddleware, async (req, 
             user: req.user
         });
     } catch (error) {
-        console.error("Error fetching receipt for edit:", error);
+        logger.error(`Error fetching receipt for edit: ${error.message}`);
         next(error);
     }
 });
