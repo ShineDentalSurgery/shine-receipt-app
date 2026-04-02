@@ -106,6 +106,12 @@ async function deleteReciept(req, res) {
 
 async function getAllReceipts(req, res, next) {
     try {
+        // Guard: prevent rendering if headers already sent
+        if (res.headersSent) {
+            logger.warn('getAllReceipts: headers already sent, skipping render');
+            return;
+        }
+
         const data = await ReceiptItem.getReceipts();
         data.forEach(receipt => {
             // Use formatService to safely handle any service format
@@ -227,11 +233,48 @@ async function updateReceipt(req, res) {
         );
 
         if (updated) {
-            res.status(200).render("receiptEdit", {
-                message: "Receipt updated successfully",
-                receipt, // Pass the receipt object to the view
-                user: req.user
-            });
+                // Guard: prevent rendering if headers already sent
+                if (res.headersSent) {
+                    logger.warn('updateReceipt: headers already sent, skipping render');
+                    return;
+                }
+                
+                // After successful update, fetch the receipts list and render it
+                const data = await ReceiptItem.getReceipts();
+                // Normalize the service field (stored as JSON string) for display
+                data.forEach(r => {
+                    if (typeof r.service === "string") {
+                        try {
+                            r.service = JSON.parse(r.service);
+                        } catch (e) {
+                            logger.warn(`Failed to parse service for receipt ${r.receipt_id}: ${e.message}`);
+                            r.service = [];
+                        }
+                    }
+                    // Ensure service is an array
+                    if (!Array.isArray(r.service)) {
+                        r.service = r.service ? [r.service] : [];
+                    }
+                });
+
+                // Render admin view for admins, otherwise render normal receipts view
+                if (req.user && req.user.usertype === 'admin') {
+                    return res.status(200).render("adminReceipts", {
+                        title: "Admin Receipts",
+                        receipts: data,
+                        message: "Receipt updated successfully",
+                        updatedReceipt: receipt,
+                        user: req.user
+                    });
+                }
+
+                return res.status(200).render("receipts", {
+                    title: "Receipts List",
+                    receipts: data,
+                    message: "Receipt updated successfully",
+                    updatedReceipt: receipt,
+                    user: req.user
+                });
         } else {
             logger.warn(`Receipt with ID ${receipt_id} not updated`);
             res.status(404).json({ message: "Receipt not updated" });
