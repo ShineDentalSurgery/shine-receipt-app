@@ -9,6 +9,13 @@ ALTER TABLE receipts
   ADD COLUMN amount DECIMAL(10,2) NOT NULL DEFAULT 0 AFTER discount;
 --   ADD COLUMN amount_paid DECIMAL(10,2) NOT NULL DEFAULT 0 AFTER mode_of_payment;
 
+
+ALTER TABLE receipts
+-- add COLUMN gender ENUM('Male', 'female', 'other') DEFAULT NULL AFTER patient_phone,
+-- add column age INT DEFAULT NULL after gender,
+-- add COLUMN next_visit DATE DEFAULT NULL after age,
+add COLUMN room_number VARCHAR(50) DEFAULT NULL after next_visit;
+
 CREATE TABLE receipts (
 
 id INT AUTO_INCREMENT PRIMARY KEY,

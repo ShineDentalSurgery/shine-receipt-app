@@ -67,10 +67,11 @@ h3 {
 
 main {
     padding: 20px;
-    background-color: #f8f9fa;
+    padding-bottom: 80px;
+    background-color: #ffffff;
     display: flex;
     flex-direction: column;
-    transition: margin-left 0.3s;
+    width: 100%;
 }
 
 h2 {
@@ -218,7 +219,7 @@ td {
 }
 
 th {
-    background-color: #f4f4f4;
+    background-color: #f8f9fa;
     /* Already present, keeps header light gray */
 }
 

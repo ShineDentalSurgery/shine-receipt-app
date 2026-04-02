@@ -39,7 +39,7 @@
 .sidebar-menu li a i{
     width:18px;
     text-align:center;
-    color:#ffffff;
+    color:#0056b3;
 }
 
 /* Hover */
@@ -98,6 +98,13 @@
 </a>
 </li>
 
+<li>
+<a href="/appointments" class="<%= title && title.includes('Appointment') ? 'active' : '' %>">
+<i class="fa-solid fa-calendar-check"></i>
+<span>Appointments</span>
+</a>
+</li>
+
 
 <li class="sidebar-title">Documents</li>
 
@@ -129,6 +136,31 @@
 </a>
 </li>
 
+
+<li class="sidebar-title">Reports & Finance</li>
+
+<li>
+<a href="/sales-report/daily" class="<%= title && title.includes('Sales Report') ? 'active' : '' %>">
+<i class="fa-solid fa-chart-column"></i>
+<span>Sales Report</span>
+</a>
+</li>
+
+<li>
+<a href="/expenses" class="<%= title === 'Expenses Management' ? 'active' : '' %>">
+<i class="fa-solid fa-hand-holding-dollar"></i>
+<span>Expenses</span>
+</a>
+</li>
+
+<li class="sidebar-title">Old Database</li>
+<li>
+<a href="/database-old" class="<%= title === 'Database Old' ? 'active' : '' %>">
+<i class="fa-solid fa-chart-column"></i>
+<span>Database Old</span>
+</a>
+
+</li>
 
 <li class="sidebar-title">Account</li>
 

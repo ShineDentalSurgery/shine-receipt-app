@@ -44,6 +44,74 @@
             background-color: #dc3545;
             color: white;
         }
+
+        .status-dropdown {
+            padding: 5px 8px;
+            border-radius: 4px;
+            border: none;
+            font-weight: bold;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .status-dropdown.draft {
+            background-color: #ffc107;
+            color: black;
+        }
+
+        .status-dropdown.sent {
+            background-color: #17a2b8;
+            color: white;
+        }
+
+        .status-dropdown.paid {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .status-dropdown.cancelled {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .status-dropdown:hover {
+            opacity: 0.8;
+        }
+
+        .status-updating {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        /* Scroll to bottom button */
+        #scrollToBottomBtn {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 24px;
+            cursor: pointer;
+            z-index: 1000;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        #scrollToBottomBtn:hover {
+            background: #218838;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+            transform: scale(1.1);
+        }
+
+        #scrollToBottomBtn:active {
+            transform: scale(0.95);
+        }
     </style>
 </head>
 
@@ -89,9 +157,18 @@
                             <td>UGX <%= parseFloat(invoice.total).toLocaleString('en-US') %>
                             </td>
                             <td>
-                                <span class="status-badge status-<%= invoice.status %>">
-                                    <%= invoice.status.charAt(0).toUpperCase() + invoice.status.slice(1) %>
-                                </span>
+                                <% if (user && user.usertype==='admin') { %>
+                                    <select class="status-dropdown <%= invoice.status %>" data-invoice-id="<%= invoice.id %>" onchange="updateInvoiceStatus(this)">
+                                        <option value="draft" <%= invoice.status === 'draft' ? 'selected' : '' %>>Draft</option>
+                                        <option value="sent" <%= invoice.status === 'sent' ? 'selected' : '' %>>Sent</option>
+                                        <option value="paid" <%= invoice.status === 'paid' ? 'selected' : '' %>>Paid</option>
+                                        <option value="cancelled" <%= invoice.status === 'cancelled' ? 'selected' : '' %>>Cancelled</option>
+                                    </select>
+                                <% } else { %>
+                                    <span class="status-badge status-<%= invoice.status %>">
+                                        <%= invoice.status.charAt(0).toUpperCase() + invoice.status.slice(1) %>
+                                    </span>
+                                <% } %>
                             </td>
                             <td>
                                 <div class="action-buttons">
@@ -127,6 +204,42 @@
             });
         });
 
+        async function updateInvoiceStatus(selectElement) {
+            const invoiceId = selectElement.dataset.invoiceId;
+            const newStatus = selectElement.value;
+            
+            selectElement.classList.add('status-updating');
+
+            try {
+                const response = await fetch(`/invoices/${invoiceId}/status`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ status: newStatus })
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    // Update the dropdown styling based on new status
+                    selectElement.classList.remove('draft', 'sent', 'paid', 'cancelled');
+                    selectElement.classList.add(newStatus);
+                    alert('Invoice status updated successfully');
+                } else {
+                    alert(result.message || 'Error updating invoice status');
+                    // Revert the select to previous value on error
+                    location.reload();
+                }
+            } catch (error) {
+                console.error('Error updating invoice status:', error);
+                alert('Error updating invoice status');
+                location.reload();
+            } finally {
+                selectElement.classList.remove('status-updating');
+            }
+        }
+
         async function deleteInvoice(invoiceId) {
             if (confirm("Are you sure you want to delete this invoice?")) {
                 try {
@@ -146,8 +259,27 @@
             }
         }
     </script>
+
+<button id="scrollToBottomBtn" title="Scroll to bottom">↓</button>
+
+<script>
+    const scrollToBottomBtn = document.getElementById('scrollToBottomBtn');
+    
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 300) {
+            scrollToBottomBtn.style.display = 'block';
+        } else {
+            scrollToBottomBtn.style.display = 'none';
+        }
+    });
+    
+    scrollToBottomBtn.addEventListener('click', () => {
+        window.scrollTo({
+            top: document.documentElement.scrollHeight,
+            behavior: 'smooth'
+        });
+    });
+</script>
 </body>
 
 </html>
-
-<%- include('partials/footer') %>

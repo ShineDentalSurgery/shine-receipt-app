@@ -4,15 +4,21 @@ const expressLayouts = require("express-ejs-layouts");
 const static = require("./src/routes/static");
 const cors = require("cors");
 const path = require("path");
+const { formatPatientId } = require("./src/utils/patientIdFormatter");
+const formatService = require("./src/utils/serviceFormatter");
 const authenticateToken = require('./src/middleware/authMiddleware');
 const receiptRoutes = require("./src/routes/receiptRoutes");
 const invoiceRoutes = require("./src/routes/invoiceRoutes");
+const appointmentRoutes = require("./src/routes/appointmentRoutes");
 const baseController = require("./src/controllers/baseController");
+const dbold = require("./src/routes/databaseOld-route");
 const flash = require("connect-flash");
 const session = require("express-session");
 const cookieParser = require('cookie-parser');
 const accountRoutes = require('./src/routes/account-route');
 const baseRoutes = require('./src/routes/baseroute');
+const expensesRoutes = require('./src/routes/expensesRoutes');
+const salesReportRoutes = require('./src/routes/salesReportRoutes');
 require('dotenv').config();
 
 // logging utility
@@ -47,6 +53,8 @@ app.use((req, res, next) => {
 // Middleware to attach user to res.locals
 app.use((req, res, next) => {
     res.locals.user = req.user || null;
+    res.locals.formatPatientId = formatPatientId;
+    res.locals.formatService = formatService;
     next();
 });
 
@@ -55,7 +63,7 @@ app.use((req, res, next) => {
  *************************/
 app.set("view engine", "ejs");
 app.use(expressLayouts);
-app.set("layout", "./layouts/layout");
+app.set("layout", "layouts/layout");
 
 // Routes
 app.use(static);
@@ -106,11 +114,24 @@ app.use("/receiptDetails", require("./src/routes/receiptRoutes"));
 // Invoice routes
 app.use("/invoices", invoiceRoutes);
 
+// Expenses routes
+app.use("/expenses", expensesRoutes);
+
+// Sales Report routes
+app.use("/sales-report", salesReportRoutes);
+
+// Appointments routes
+app.use("/appointments", appointmentRoutes);
+
 // login routes
 app.use("/account", accountRoutes);
 
 // Protected route 
 app.get('/', authenticateToken, baseController.buildHome);
+
+// old database page - support both route formats
+app.use('/databaseOld', dbold);
+app.use('/database-old', dbold);
 
 // Start the server
 const PORT = process.env.PORT || 5000;

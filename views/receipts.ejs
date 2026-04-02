@@ -1,75 +1,120 @@
 <!DOCTYPE html>
 <html lang="en">
 
-        <h2><%= title %></h2>
-        <input type="text" id="filter" placeholder="Search Patient.... ">
-        <a href="/receipt" style="margin-bottom: 15px; padding: 10px 20px; background-color: #589f14; color: white; text-decoration: none; border-radius: 4px; display: inline-block;">+ New Receipt</a>
-        <table>
-            <thead>
-                <tr>
-                    <th>Receipt ID</th>
-                    <th>Patient ID</th>
-                    <th>Date</th>
-                    <th>Patient Name</th>
-                    <th>Phone Number</th>
-                    <th>Services</th>
-                    <th>Total</th>
-                    <th>Mode of Payment</th>
-                    <th>Amount Paid</th>
-                    <th>Balance</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <% receipts.forEach(receipt => { %>
-                    <tr class="item-list">
-                        <td><%= receipt.id %></td>
-                        <td>SDS/<%= receipt.id %></td>
-                        <td><%= new Date(receipt.created_at).toLocaleDateString('en-GB') %></td>
-                        <td class="names">
-                            <a href="/receiptDetails/<%= receipt.id %>?patient_id=<%= receipt.id %>"><%= receipt.patient_name %></a>
-                        </td>
-                        <td>
-                            <%
-                                const rawPhone = receipt.patient_phone || '';
-                                let digits = rawPhone.replace(/\D/g, '');
-                                if (digits.startsWith('0')) {
-                                    digits = '256' + digits.slice(1);
-                                }
-                                const displayPhone = digits ? '+' + digits : rawPhone;
-                            %>
-                            <a href="https://wa.me/<%= digits %>?text=<%= encodeURIComponent('Hello ' + receipt.patient_name + ' welcome to Shine Dental Surgery (Mengo). Thank you for choosing us.') %>" target="_blank" style="color: #25D366; text-decoration: none;" title="Send WhatsApp message">
-                                <%= displayPhone %>
-                                <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" style="height:16px;vertical-align:middle;margin-left:4px;">
-                            </a>
-                        </td>
-                        <td>
-                            <% 
-                                let servicesText = '';
-                                if (Array.isArray(receipt.service)) {
-                                    servicesText = receipt.service.map(s => {
-                                        if (s && typeof s === 'object') return s.name || s.service || JSON.stringify(s);
-                                        return String(s);
-                                    }).join(', ');
-                                } else {
-                                    servicesText = receipt.service;
-                                }
-                            %>
-                            <%= servicesText %>
-                        </td>
-                        <td><%= Number(receipt.total).toLocaleString('en-US') %></td>
-                        <td><%= receipt.mode_of_payment %></td>
-                        <td>UGX<%= Number(receipt.amount_paid).toLocaleString('en-US') %></td>
-                        <td>UGX<%= Number(receipt.balance).toLocaleString('en-US') %></td>
-                        <td>
-                            <% if (user && user.usertype === 'admin') { %>
-                                <button onclick="deleteReceipt('<%= receipt.id %>')" style="color: white;">Delete</button>
-                            <% } %>
-                        </td>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        <%= title %>
+    </title>
+    <link rel="stylesheet" href="/styles.css">
+    <style>
+        .hidden {
+            display: none;
+        }
+
+        /* Scroll to bottom button */
+        #scrollToBottomBtn {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #589f14;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 24px;
+            cursor: pointer;
+            z-index: 1000;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        #scrollToBottomBtn:hover {
+            background: #4a7c0e;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+            transform: scale(1.1);
+        }
+
+        #scrollToBottomBtn:active {
+            transform: scale(0.95);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="table">
+
+
+        <div class="table-specs">
+
+
+            <h2>
+                <%= title %>
+            </h2>
+            <input type="text" id="filter" placeholder="Search Patient.... ">
+
+            <a href="/receipt"
+                style="margin-bottom: 15px; padding: 10px 20px; background-color: #589f14; color: white; text-decoration: none; border-radius: 4px; display: inline-block;">+
+                New Receipt</a>
+            <table>
+                <thead>
+                        <tr>
+                        <th>Receipt ID</th>
+                        <th>Date</th>
+                        <th>Patient Name</th>
+                        <th>Phone Number</th>
+                        <th>Total</th>
+                        <th>Balance</th>
+                        <th>Action</th>
                     </tr>
-                <% }) %>
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    <% receipts.forEach(receipt=> { %>
+                        <tr class="item-list">
+                            <td>
+                                <%= receipt.id %>
+                            </td>
+                            <td>
+                                <%= new Date(receipt.created_at).toLocaleDateString('en-GB') %>
+                            </td>
+                            <td class="names"> <a href="/receiptDetails/<%= receipt.id %>?patient_id=<%= receipt.id %>">
+                                    <%= receipt.patient_name %>
+                                </a> </td>
+                            <td>
+                                <a href="https://wa.me/<%= receipt.patient_phone.replace(/\D/g, '') %>?text=Hello%20<%= encodeURIComponent(receipt.patient_name) %>,%20your%20balance%20is%20<%= encodeURIComponent(receipt.balance) %>."
+                                    target="_blank" style="color: #25D366; text-decoration: none;"
+                                    title="Send WhatsApp message">
+                                    <%= receipt.patient_phone %>
+                                        <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg"
+                                            alt="WhatsApp" style="height:16px;vertical-align:middle;margin-left:4px;">
+                                </a>
+                            </td>
+                        <td><span style="color: #000000; font-weight: bold;">
+                                    UGX <%= Number(receipt.total).toLocaleString('en-US') %>
+                                        </span></td>
+                        <td><span style="color: <%=Number(receipt.balance)> 0 ? '#dc3545' : '#28a745' %>; font-weight:
+                                    bold;">
+                                    UGX <%= Number(receipt.balance).toLocaleString('en-US') %>
+                                        </span>
+                            </td>
+                            <td>
+                                <% if (user && user.usertype==='admin' ) { %>
+                                    <button onclick="deleteReceipt('<%= receipt.id %>')"
+                                        style="color: white;">Delete</button>
+                                    <% } %>
+                                <a href="/receipts/patient/<%= receipt.patient_phone %>"
+                                    style="margin-left: 5px; padding: 5px 10px; background-color: #007bff; color: white; text-decoration: none; border-radius: 3px; display: inline-block;">
+                                    View Patient
+                                </a>
+                            </td>
+                        </tr>
+                        <% }) %>
+                </tbody>
+            </table>
+        </div>
     </div>
     <script>
         document.getElementById('filter').addEventListener('input', function() {
@@ -129,8 +174,27 @@
             phoneElement.textContent = formattedNumber;
         });
     </script>
+
+<button id="scrollToBottomBtn" title="Scroll to bottom">↓</button>
+
+<script>
+    const scrollToBottomBtn = document.getElementById('scrollToBottomBtn');
+    
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 300) {
+            scrollToBottomBtn.style.display = 'block';
+        } else {
+            scrollToBottomBtn.style.display = 'none';
+        }
+    });
+    
+    scrollToBottomBtn.addEventListener('click', () => {
+        window.scrollTo({
+            top: document.documentElement.scrollHeight,
+            behavior: 'smooth'
+        });
+    });
+</script>
 </body>
 
 </html>
-
-<%- include('partials/footer') %>
